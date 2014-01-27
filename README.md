@@ -31,7 +31,7 @@ This application has the following values hardcoded:
             });
             
 When consuming this Web API service, use a phone number of 10 digits that is prefixed with any of the codes from 
-the allCountries list.
+the allCountries list. Do not use special characters in the phone field, only numbers are accepted.
 
 To consume this service, the following route was added: 
 
