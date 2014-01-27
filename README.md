@@ -30,10 +30,11 @@ This application has the following values hardcoded:
                 CurrencyName = "Pound"
             });
             
-When consuming this Web API service, use a phone number of 10 digits that is prefixed with any of the coes from 
+When consuming this Web API service, use a phone number of 10 digits that is prefixed with any of the codes from 
 the allCountries list.
 
 To consume this service, the following route was added: 
+
               config.Routes.MapHttpRoute(
                 name: "CountryPhone",
                 routeTemplate: "api/{controller}/{action}/{phonenumber}"
@@ -43,6 +44,7 @@ To consume this service, the following route was added:
 Exchange Rate App
 
 To consume this Web API service, the following route was added:
+
             config.Routes.MapHttpRoute(
                name: "ExchangeCurrency",
                routeTemplate: "api/{controller}/{action}/{source}/{target}/{amount}"              
