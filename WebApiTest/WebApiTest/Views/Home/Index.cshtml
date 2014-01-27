@@ -1,0 +1,144 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>Web API Tests</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-5">
+        <h3>Country Code by Telephone Number</h3>
+        <p>Enter your full phone number, including country code to find out more information about this phone.</p>
+
+        @Html.TextBox("phoneNumber")
+        <br />
+        <button onclick="GetCountry(); return false;">Get Country</button>
+        <br /><br />
+        <div id="divCountryResult">
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <h3>Exchange Rate between 2 countries</h3>
+        <p>Select the source country, target country and amount.</p>
+
+        <div class="col-md-3">
+            <span style="font-weight:bold">Source:</span>
+            <select id="source">
+                <option value="USA">USA</option>
+                <option value="EU">EU</option>
+                <option value="Mexico">Peso</option>
+                <option value="Great Britain">Great Britain</option>
+                <option value="Canada">Canada</option>
+                <option value="China">Yuan</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <span style="font-weight:bold">Target:</span>
+            <select id="target">
+                <option value="USA">USA</option>
+                <option value="EU">EU</option>
+                <option value="Mexico">Peso</option>
+                <option value="Great Britain">Great Britain</option>
+                <option value="Canada">Canada</option>
+                <option value="China">Yuan</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="col-md-4">
+            <span style="font-weight:bold">Amount:</span><br />
+            @Html.TextBox("amount")
+        </div>
+        <div class="col-md-3" style="margin-top:12px">
+            <button onclick="GetExchangeRate(); return false;">Get Amount</button>
+        </div>
+    </div>
+    <br /><br />
+    <div id="divRateResult" class="col-md-7" style="padding-top:5px">
+    </div>
+</div>
+
+
+
+<script language="javascript">
+    function GetCountry() {
+        var phoneNumber = $("#phoneNumber").val();
+
+        $.ajax({
+            url: 'http://bc-test1.cloudapp.net/CountryCodeApp/api/countries/GetByPhoneNumber/' + phoneNumber,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                DisplayCountryResponse(data);
+            },
+            error: function (x, y, z) {
+                alert(x + '\n' + y + '\n' + z);
+            }
+        });
+    }
+
+    function GetExchangeRate() {
+        var source = $("#source").val();
+        var target = $("#target").val();
+        var amount = $("#amount").asNumber();
+
+        var uri = 'http://bc-test1.cloudapp.net/ExchangeRateApp/api/countryrate/ExchangeCurrency/' + source + '/' + target + '/' + amount;
+        $.ajax({
+            url: uri,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                DisplayExchangeResponse(data);
+            },
+            error: function (x, y, z) {
+                alert(x + '\n' + y + '\n' + z);
+            }
+        });
+    }
+
+    function DisplayCountryResponse(data) {
+        var result = "<span style='font-weight:bold'>Country Code: ";
+        result = result + data.CountryCode;
+        result = result + ", Country Name: ";
+        result = result + data.CountryName;
+        result = result + ", Currency Name: ";
+        result = result + data.CurrencyName;
+        result = result + "</span>";
+
+        $("#divCountryResult").html(result);
+    }
+
+    function DisplayExchangeResponse(data) {
+        var result = "<span style='font-weight:bold'>Source Country: ";
+        result = result + data.SourceCountryName;
+        result = result + ", Currency: ";
+        result = result + data.SourceCountryCurrency;
+        result = result + ", Exchange Rate: </span>";
+        result = result + "<span style='font-weight:bold' id='sourceAmount'>";
+        result = result + data.SourceExchangeRate;
+        result = result + "</span>";
+        result = result + "<br />";
+        result = result + "<span style='font-weight:bold'>Target Country: ";
+        result = result + data.TargetCountryName;
+        result = result + ", Currency: ";
+        result = result + data.TargetCountryCurrency;
+        result = result + ", Exchange Rate: </span>";
+        result = result + "<span style='font-weight:bold' id='targetAmount'>";
+        result = result + data.TargetExchangeRate;
+        result = result + "</span><br />";
+        result = result + "<span style='font-weight:bold; font-size:big'>Amount:</span>";
+        result = result + "<span style='font-weight:bold; font-size:big' id='total'>";
+        result = result + data.ConversionAmount;
+        result = result + "</span>";
+
+        $("#divRateResult").html(result);
+
+        $("#amount").formatCurrency();
+        $("#sourceAmount").formatCurrency();
+        $("#targetAmount").formatCurrency();
+        $("#total").formatCurrency();
+    }
+</script>
